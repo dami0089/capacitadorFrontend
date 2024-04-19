@@ -6,6 +6,7 @@ import { Button, Typography } from "@material-tailwind/react";
 import React, { useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { marked } from "marked";
+import './ToggleButton.css';
 
 export function Home() {
   const [mensajesEnviados, setMensajesEnviados] = useState([]);
@@ -18,6 +19,7 @@ export function Home() {
       contenido: `Necesito que actúes como si fueses un comprador. Iniciare la conversacion saludando. Deberemos interactuar, por lo tanto tendras que esperar mis respuestas a tus consultas. Te asesorare en todo el proceso de compra y cuando sientas que tienes lo que buscabas, necesito que le des un cierre a la conversacion e inicies una despedida`,
     },
   ]);
+  const [modoVendedor, setModoVendedor] = useState(false);
 
   useEffect(() => {
     scrollToBottom();
@@ -60,12 +62,15 @@ export function Home() {
     scrollToBottom();
   }, [mensajesEnviados]);
 
+  const toggleModo = () => {
+    setModoVendedor((prevModo) => !prevModo);
+  };
+
   return (
     <>
       <div className="h-auto w-full pl-48 pr-48 sm:flex sm:items-start">
         <div className="mt-3 w-full text-center sm:ml-0 sm:mt-0 sm:text-left">
           <ToastContainer pauseOnFocusLoss={false} />
-
           {/* Contenedor de mensajes con ajuste de altura y margen */}
           <div className="relative  mt-4 flex h-[calc(90vh-200px)] flex-col-reverse overflow-y-auto">
             {mensajesEnviados
@@ -119,6 +124,14 @@ export function Home() {
               <PaperAirplaneIcon className="h-8 w-8 text-white" />
             </Button>
           </div>
+          <Button
+            className="mb-2 mr-2 h-16 flex-shrink p-4"
+            type="button"
+            onClick={toggleModo}
+          >
+            {modoVendedor ? "Modo Comprador" : "Modo Vendedor"}
+          </Button>
+
         </div>
       </div>
 
