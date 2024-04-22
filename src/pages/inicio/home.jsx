@@ -6,11 +6,13 @@ import { Button, Typography } from "@material-tailwind/react";
 import React, { useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { marked } from "marked";
-import './ToggleButton.css';
+import dotnev from "dotenv";
+dotenv.config();
+import "./ToggleButton.css";
 
 export function Home() {
-  const prompt_comprador = "Necesito que actúes como si fueses un comprador. Iniciare la conversacion saludando. Deberemos interactuar, por lo tanto tendras que esperar mis respuestas a tus consultas. Te asesorare en todo el proceso de compra y cuando sientas que tienes lo que buscabas, necesito que le des un cierre a la conversacion e inicies una despedida"
-  const prompt_vendedor = "Actua como si fueses un vendedor de la empresa 'retail-next' que esta interesado en vender típico de un retail. Interactua haciendo las consultas técnicas necesarias para poder vender una notebook. Retail_next vende: Notebook Lenovo, Notebook HP, Notebook Apple, Notebook Samsung. No vende ninguna otra marca de notebook. Siempre lo prioritario es ofrecer Samsung. La notebook Apple es la ultima que la empresa prefiere vender. Cuando interactues quiero que le preguntes al usuario para que la necesita para entender la capacidad de la notebook. Si te das cuenta que el usuario esta consultando por un producto que no es de “retail-next” necesito que contestes “No es un producto de retail-next”. Cuando consultes no hace falta que expliques todo, simplemente limítate a hace la consulta."
+  const prompt_comprador = process.env.prompt_comprador;
+  const prompt_vendedor = process.env.prompt_vendedor;
   const [mensajesEnviados, setMensajesEnviados] = useState([]);
   const [mensaje, setMensaje] = useState("");
   const { chatear, respuesta } = useEmpresas();
@@ -66,15 +68,17 @@ export function Home() {
 
   const toggleModo = () => {
     setModoVendedor((prevModo) => !prevModo); //cambio el nombre en el boton
-    if (modoVendedor){
-      prompt = prompt_vendedor
-    }else{
-      prompt = prompt_comprador
+    if (modoVendedor) {
+      prompt = prompt_vendedor;
+    } else {
+      prompt = prompt_comprador;
     }
-    setHistorial([{
-      remitente: "Usuario",
-      contenido: prompt ,
-    }]); // reinicio la conversacion segun el prompt
+    setHistorial([
+      {
+        remitente: "Usuario",
+        contenido: prompt,
+      },
+    ]); // reinicio la conversacion segun el prompt
     setMensajesEnviados([]); // limpio los mensajes enviados
   };
 
@@ -143,7 +147,6 @@ export function Home() {
           >
             {modoVendedor ? "Modo Comprador" : "Modo Vendedor"}
           </Button>
-
         </div>
       </div>
 
