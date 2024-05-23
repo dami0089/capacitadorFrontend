@@ -25,8 +25,8 @@ export function Home() {
   fijate de recordarle que tenemos las siguientes promos bancarias: \
   6 cuotas sin interes con banco mariva \
   30 % en un pago con banco galicia";
-  
-  
+
+
   const [mensajesEnviados, setMensajesEnviados] = useState([]);
   const [mensaje, setMensaje] = useState("");
   const { chatear, respuesta } = useEmpresas();
@@ -55,7 +55,7 @@ export function Home() {
 
   const handleEnviarMensaje = async (e) => {
     e.preventDefault();
-    
+
     let nuevo_mensaje = mensaje + "Recuerda que eres un comprador y yo soy tu vendedor."; //Agrego que se mantenga en contexto
 
     if (mensaje.trim() !== "") {
@@ -98,6 +98,37 @@ export function Home() {
     ]); // reinicio la conversacion segun el prompt
     setMensajesEnviados([]); // limpio los mensajes enviados
   };
+
+  const handleFinalizarConversacion = async(e) => {
+    e.preventDefault();
+    if (!modoVendedor) {
+      setHistorial([
+        {
+          remitente: "Usuario",
+          contenido: prompt_vendedor,
+        },
+      ]); // reinicio la conversacion segun el prompt
+      setMensajesEnviados([]); // limpio los mensajes enviados
+    } else {
+      handleCargando();
+      const historialActualizado = await chatear(mensaje, historial);
+      setMensajesEnviados((mensajesAnteriores) => [
+        ...mensajesAnteriores,
+        {
+          remitente: "Usuario",
+          contenido: `La conversación ha finalizado. Recuerda realizar una evaluación poniendo una puntuación del 1 al 10 sobre las
+                      siguientes características: Saludo y Empatía, Descubrimiento de Necesidades, Demostración del Producto,
+                      Manejo de Objeciones. Además, incluye una recomendación para mejorar estas características. por favor se muy exigente.
+                      `
+        },
+      ]);
+      if (historialActualizado) {
+        setHistorial(historialActualizado);
+      }
+      setMensaje("");
+      handleCargando();
+    }
+  }
 
   return (
     <>
@@ -163,6 +194,13 @@ export function Home() {
             onClick={toggleModo}
           >
             {modoVendedor ? "Modo Comprador" : "Modo Vendedor"}
+          </Button>
+          <Button
+            className="mb-2 mr-2 h-16 flex-shrink p-4"
+            type="button"
+            onClick={handleFinalizarConversacion}
+          >
+            {"Finalizar conversación"}
           </Button>
         </div>
       </div>
