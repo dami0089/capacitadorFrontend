@@ -15,6 +15,7 @@ export function Home() {
 
   const prompt_vendedor = import.meta.env.VITE_PROMPT_VENDEDOR;
 
+  const prompt_finalizar = import.meta.env.VITE_PROMPT_FINALIZAR;
 
   const [mensajesEnviados, setMensajesEnviados] = useState([]);
   const [mensaje, setMensaje] = useState("");
@@ -45,7 +46,7 @@ export function Home() {
   const handleEnviarMensaje = async (e) => {
     e.preventDefault();
 
-    let nuevo_mensaje = mensaje + "Recuerda que eres un comprador y yo soy tu vendedor."; //Agrego que se mantenga en contexto
+    let nuevo_mensaje = mensaje + " Recuerda que eres un comprador y yo soy tu vendedor."; //Agrego que se mantenga en contexto
 
     if (mensaje.trim() !== "") {
       handleCargando();
@@ -100,15 +101,12 @@ export function Home() {
       setMensajesEnviados([]); // limpio los mensajes enviados
     } else {
       handleCargando();
-      const historialActualizado = await chatear(mensaje, historial);
+      const historialActualizado = await chatear(prompt_finalizar, historial);
       setMensajesEnviados((mensajesAnteriores) => [
         ...mensajesAnteriores,
         {
           remitente: "Usuario",
-          contenido: `La conversación ha finalizado. Recuerda realizar una evaluación poniendo una puntuación del 1 al 10 sobre las
-                      siguientes características: Saludo y Empatía, Descubrimiento de Necesidades, Demostración del Producto,
-                      Manejo de Objeciones. Además, incluye una recomendación para mejorar estas características. por favor se muy exigente.
-                      `
+          contenido: "Conversación terminada, evaluación del comprador:"
         },
       ]);
       if (historialActualizado) {
