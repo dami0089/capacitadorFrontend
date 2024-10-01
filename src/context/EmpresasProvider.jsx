@@ -5,6 +5,7 @@ import clienteAxios from "@/configs/clinteAxios";
 import { useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 const EmpresasContext = createContext();
 
@@ -84,6 +85,7 @@ const EmpresasProvider = ({ children }) => {
   const [buscar, setBuscar] = useState("");
   const [modalMostrarOcr, setModalMostrarOcr] = useState(false);
   const [actualizarDash, setActualizarDash] = useState(false);
+  const [consulta, setConsulta] = useState("");
 
   const handleModalOcr = () => {
     setModalMostrarOcr(!modalMostrarOcr);
@@ -1290,6 +1292,43 @@ const EmpresasProvider = ({ children }) => {
     }
   };
 
+  const [preguntas, setPreguntas] = useState("");
+
+  const obtenerPreguntas = async () => {
+    try {
+      const { data } = await clienteAxios.post(
+        `/empresas/generar-preguntas`,
+        {}
+      );
+
+      setPreguntas(data.items);
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Hubo un error, intenta de nuevo!",
+      });
+    }
+  };
+
+  const [resModulo, setResModulo] = useState("");
+
+  const responder = async (pregunta) => {
+    try {
+      const { data } = await clienteAxios.post(`/empresas/responder`, {
+        pregunta,
+      });
+
+      setResModulo(data.respuesta);
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Hubo un error, intenta de nuevo!",
+      });
+    }
+  };
+
   return (
     <EmpresasContext.Provider
       value={{
@@ -1459,6 +1498,13 @@ const EmpresasProvider = ({ children }) => {
         obtenerUsuariosInactivosPorEmpresa,
         chatear,
         respuesta,
+        preguntas,
+        obtenerPreguntas,
+        resModulo,
+        responder,
+        consulta,
+        setConsulta,
+        setResModulo,
       }}
     >
       {children}
